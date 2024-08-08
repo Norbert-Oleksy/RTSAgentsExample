@@ -13,7 +13,7 @@ namespace UIAssembly
         private string _agentsCount;
         #endregion
 
-        #region Functionality Agents
+        #region Methods
 
         public void AddAgent()
         {
