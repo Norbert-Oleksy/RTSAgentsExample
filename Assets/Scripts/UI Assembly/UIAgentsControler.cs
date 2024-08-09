@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using CoreAssembly;
+using UnityEngine.UI;
 namespace UIAssembly
 {
     public class UIAgentsControler : MonoBehaviour
     {
-        #region Singleton
-        public static UIAgentsControler instance;
+        #region Fields
+        [Header("InfoBoxSection")]
+        [SerializeField] private Transform infoBoxContent;
+        [SerializeField] private GameObject infoMsgPrefab;
         #endregion
         #region Variables
         private string _agentsCount;
@@ -17,27 +20,29 @@ namespace UIAssembly
 
         public void AddAgent()
         {
-            //TODO
+            GameManager.instance.RequestAgentSpawn();
         }
 
         public void RemoveRandomAgent()
         {
-            //TODO
+            GameManager.instance.RequestRemoveRandomAgent();
         }
 
         public void ClearAllAgents()
         {
-            //TODO
+            GameManager.instance.RequestClearAllAgents();
         }
 
         public void SentMsgInfoBox(string msg)
         {
-            //TODO
+            GameObject infoMsg = Instantiate(infoMsgPrefab);
+            infoMsg.transform.SetParent(infoBoxContent, false);
+            infoMsg.GetComponent<Text>().text = msg;
         }
 
-        public void UpdateAgentsCounter(string value)
+        public void UpdateAgentsCounter(int value)
         {
-            //TODO
+            _agentsCount = value.ToString();
         }
 
         #endregion
@@ -45,9 +50,9 @@ namespace UIAssembly
         #region Unity-API
         private void Awake()
         {
-            if (instance != null && instance != this) return;
-            instance = this;
             _agentsCount = 0.ToString();
+            GameManager.UpdateAgentLabel += UpdateAgentsCounter;
+            GameManager.SentInfoMsg += SentMsgInfoBox;
         }
 
         void OnGUI()

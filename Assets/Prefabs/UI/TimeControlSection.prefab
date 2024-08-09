@@ -269,6 +269,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e89492404ea1494f9e37dcbd82b58e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseImage: {fileID: 7644602329382424533}
+  pauseIcon: {fileID: 21300000, guid: ca06ba03be2a67e4fae8aa30f13f1670, type: 3}
+  resumeIcon: {fileID: 21300000, guid: 0db1d09e3f3ca30429e2c926179b6677, type: 3}
 --- !u!1 &7644602329382424534
 GameObject:
   m_ObjectHideFlags: 0

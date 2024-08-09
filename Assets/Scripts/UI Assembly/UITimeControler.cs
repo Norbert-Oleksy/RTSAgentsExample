@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CoreAssembly;
+using UnityEngine.UI;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace UIAssembly
 {
     public class UITimeControler : MonoBehaviour
     {
-        #region Singleton
-        public static UITimeControler instance;
+        #region Fields
+        [SerializeField] private Image pauseImage;
+        [SerializeField] private Sprite pauseIcon;
+        [SerializeField] private Sprite resumeIcon;
         #endregion
 
         #region Variables
@@ -24,24 +29,28 @@ namespace UIAssembly
                 PauseOrResume();
                 return;
             }
-            //if ((true && value < 0)) return;
-
-            //TODO
+            GameManager.instance.ChangeTickRateBy(value);
         }
 
         public void PauseOrResume()
         {
             if (isPaused)
             {
-                //use f from core to set a scale
-                //_timerText = "1.0"; display scale value
+                GameManager.instance.SetTickRate(1.0f);
+                pauseImage.sprite = pauseIcon;
             }
             else
             {
-                _timerText = "PAUSE";
-                //set scale to 0
+                GameManager.instance.SetTickRate(0);
+                pauseImage.sprite = resumeIcon;
             }
             isPaused = !isPaused;
+        }
+
+        public void UpdateTimerText(float time)
+        {
+            if (time == 0) { _timerText = "PAUSE"; }
+            else { _timerText = time.ToString("0.0#");}
         }
 
         #endregion
@@ -49,9 +58,8 @@ namespace UIAssembly
         #region Unity-API
         private void Awake()
         {
-            if (instance != null && instance != this) return;
-            instance = this;
             _timerText = 1.0f.ToString("0.0#");
+            GameManager.UpdateTimeLabel += UpdateTimerText;
         }
 
         void OnGUI()
