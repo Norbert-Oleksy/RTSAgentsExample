@@ -10,11 +10,6 @@ public class CameraControler : MonoBehaviour
     private Vector3 startPosition = new Vector3(0, 20, -10);
     #endregion
 
-    #region Methods
-
-
-    #endregion
-
     #region Unity-API
     private void Update()
     {
