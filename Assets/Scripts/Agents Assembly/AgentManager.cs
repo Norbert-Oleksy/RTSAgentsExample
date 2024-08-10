@@ -15,7 +15,6 @@ namespace AgentsAssembly
 
         #region Variables
         private List<Agent> agents;
-        private System.Random random;
         #endregion
 
         #region Methods
@@ -31,7 +30,7 @@ namespace AgentsAssembly
         public void RemoveRandomAgent()
         {
             if(agents.Count==0) return;
-            Agent agent = agents[random.Next(agents.Count)];
+            Agent agent = GameManager.instance.GetRandomFromTheList(agents);
             agents.Remove(agent);
             agent.DeleteThisAgent();
             GameManager.instance.UpdateAgentsCounter(agents.Count);
@@ -52,7 +51,6 @@ namespace AgentsAssembly
         #region Unity-API
         private void Awake()
         {
-            random = new System.Random();
             agents = new List<Agent>();
             GameManager.AgentManagerSpawnAgent += SpawnAgent;
             GameManager.AgentManagerRemoveRandomAgent += RemoveRandomAgent;

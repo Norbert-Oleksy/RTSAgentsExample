@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
@@ -14,7 +16,9 @@ namespace CoreAssembly
         public static GameManager instance;
         #endregion
         #region Fields
-        [SerializeField] private List<Transform> listOfPoints;
+        [Header("Points System")]
+        [SerializeField] private Transform pointsContainer;
+        [SerializeField] private GameObject pointPrefab;
         #endregion
         #region Events
         //UI Events
@@ -30,6 +34,7 @@ namespace CoreAssembly
 
         #region Variables
         private float _timeTick=1.0f;
+        private List<Transform> points = new List<Transform>();
         #endregion
 
         #region Methods - UI
@@ -78,11 +83,34 @@ namespace CoreAssembly
 
         #endregion
 
+        #region Methods - Points
+        public Transform GetRandomPoint()
+        {
+            if(points.Count == 0) SpawnNewPoint(new Vector3(UnityEngine.Random.Range(-100,100), 0, UnityEngine.Random.Range(-100, 100)));
+            return GetRandomFromTheList(points);
+        }
+
+        public void SpawnNewPoint(Vector3 position)
+        {
+            GameObject point = Instantiate(pointPrefab,position, Quaternion.identity);
+            point.transform.SetParent(pointsContainer, false);
+        }
+
+        #endregion
+
+        #region Methods - Core
+        public T GetRandomFromTheList<T>(List<T> list)
+        {
+            return list[UnityEngine.Random.RandomRange(0, list.Count)];
+        }
+        #endregion
+
         #region Unity-API
         private void Awake()
         {
             if (instance != null && instance != this) return;
             instance = this;
+            points = pointsContainer.GetComponentsInChildren<Transform>().ToList();
         }
         #endregion
     }
