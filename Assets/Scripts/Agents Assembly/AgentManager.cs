@@ -11,6 +11,7 @@ namespace AgentsAssembly
     {
         #region Fields
         [SerializeField] private GameObject agentPrefab;
+        [SerializeField] private Transform agentsContainer;
         #endregion
 
         #region Variables
@@ -21,8 +22,9 @@ namespace AgentsAssembly
         public void SpawnAgent()
         {
             GameObject agentObj = Instantiate(agentPrefab, Vector3.zero, Quaternion.identity);
+            agentObj.transform.SetParent(agentsContainer, true);
             Agent agent = agentObj.GetComponent<Agent>();
-            agent.InitiateAgent(Guid.NewGuid().ToString(),null);
+            agent.InitiateAgent(Guid.NewGuid().ToString(), GameManager.instance.GetRandomPoint().position);
             agents.Add(agent);
             GameManager.instance.UpdateAgentsCounter(agents.Count);
         }
