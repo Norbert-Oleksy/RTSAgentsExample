@@ -11,8 +11,7 @@ namespace UIAssembly
     {
         #region Fields
         [SerializeField] private Image pauseImage;
-        [SerializeField] private Sprite pauseIcon;
-        [SerializeField] private Sprite resumeIcon;
+        [SerializeField] private Sprite pauseIcon, resumeIcon;
         #endregion
 
         #region Variables
@@ -58,7 +57,7 @@ namespace UIAssembly
         #region Unity-API
         private void Awake()
         {
-            _timerText = 1.0f.ToString("0.0#");
+            _timerText = Time.timeScale.ToString("0.0#");
             GameManager.UpdateTimeLabel += UpdateTimerText;
         }
 

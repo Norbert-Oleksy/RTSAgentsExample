@@ -27,14 +27,13 @@ namespace CoreAssembly
         public static event Action<string> SentInfoMsg;
 
         //AgentManager Events
-        public static event Action AgentManagerSpawnAgent;
-        public static event Action AgentManagerRemoveRandomAgent;
-        public static event Action AgentManagerClearAllAgents;
+        public static event Action AgentManagerSpawnAgent, AgentManagerRemoveRandomAgent, AgentManagerClearAllAgents;
+        //public static event Action AgentManagerRemoveRandomAgent;
+        //public static event Action AgentManagerClearAllAgents;
         #endregion
 
         #region Variables
-        private float _timeTick=1.0f;
-        private List<Transform> points = new List<Transform>();
+        [SerializeField] private List<Transform> points = new List<Transform>();
         #endregion
 
         #region Methods - UI
@@ -71,14 +70,13 @@ namespace CoreAssembly
         #region Methods - Time
         public void SetTickRate(float value)
         {
-            _timeTick = value;
-            UpdateTimeLabel?.Invoke(_timeTick);
+            Time.timeScale = value;
+            UpdateTimeLabel?.Invoke(value);
         }
         public void ChangeTickRateBy(float value)
         {
-            _timeTick += value;
-            if (_timeTick < 0) _timeTick = 0;
-            UpdateTimeLabel?.Invoke(_timeTick);
+            Time.timeScale = Mathf.Max(0f, Time.timeScale + value);
+            UpdateTimeLabel?.Invoke(Time.timeScale);
         }
 
         #endregion
@@ -93,7 +91,7 @@ namespace CoreAssembly
         public void SpawnNewPoint(Vector3 position)
         {
             GameObject point = Instantiate(pointPrefab,position, Quaternion.identity);
-            point.transform.SetParent(pointsContainer, false);
+            point.transform.SetParent(pointsContainer, true);
         }
 
         #endregion
@@ -110,7 +108,7 @@ namespace CoreAssembly
         {
             if (instance != null && instance != this) return;
             instance = this;
-            points = pointsContainer.GetComponentsInChildren<Transform>().ToList();
+            points = pointsContainer.GetComponentsInChildren<Transform>().Where(t => t != pointsContainer.transform).ToList();
         }
         #endregion
     }
