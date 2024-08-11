@@ -1,5 +1,6 @@
 using CoreAssembly;
 using DG.Tweening;
+using Pathfinding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,11 @@ namespace AgentsAssembly
 {
     public class Agent : MonoBehaviour
     {
+        #region Fields
+        [Header("Path Finding Logic")]
+        [SerializeField] private Seeker seeker;
+        #endregion
+
         #region Variables
         private string agentID;
         private Vector3? targetPoint;
@@ -21,15 +27,19 @@ namespace AgentsAssembly
             agentID = id;
             targetPoint = point;
             GameManager.instance.SentMsgToInfoBox(string.Format("Agent {0} spawn", agentID));
-            if(targetPoint!=null) MoveToPoint();
+            if(targetPoint!=null) FindAPathToPoint();
         }
 
-        private void MoveToPoint()
+        private void FindAPathToPoint()
+        {
+            seeker.StartPath(transform.position, targetPoint.Value, MoveToPoint);
+        }
+
+        private void MoveToPoint(Path path)
         {
             moveSequence = DOTween.Sequence();
-            //Vector3[] movePath = new Vector3[1] { transform.position };
-            //moveSequence.Append(transform.DOPath(movePath, 10f)).OnComplete(() => OnMoveComplete());
-            moveSequence.Append(transform.DOMove(targetPoint.Value, Vector3.Distance(transform.position, targetPoint.Value))).OnComplete(() => OnMoveComplete());
+            Vector3[] movePath = path.vectorPath.ToArray();
+            moveSequence.Append(transform.DOPath(movePath, Vector3.Distance(transform.position, targetPoint.Value))).OnComplete(() => OnMoveComplete());
         }
 
         public void DeleteThisAgent()
@@ -41,7 +51,7 @@ namespace AgentsAssembly
 
         public void SetNewTargetPoint(Vector3? point) {
             targetPoint = point;
-            if (targetPoint != null) MoveToPoint();
+            if (targetPoint != null) FindAPathToPoint();
         }
 
         private void OnMoveComplete()
